@@ -2,6 +2,7 @@ package br.com.findUp.controllers;
 
 import br.com.findUp.components.JwtUtil;
 import br.com.findUp.dtos.SigninDTO;
+import br.com.findUp.dtos.SignupResponseDTO;    
 import br.com.findUp.dtos.SignupDTO;
 import br.com.findUp.entities.User;
 import br.com.findUp.entities.UserType;
@@ -25,12 +26,13 @@ public class AuthController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<User> postSignup(@RequestBody SignupDTO dto) throws Exception {
+    public ResponseEntity<SignupResponseDTO> postSignup(@RequestBody SignupDTO dto) throws Exception {
         User newUser = new User();
         BeanUtils.copyProperties(dto, newUser);
         newUser.setType(UserType.Common);
         userService.save(newUser);
-        return ResponseEntity.status(201).body(newUser);
+        return ResponseEntity.status(201)
+                .body(new SignupResponseDTO(newUser.getId(), newUser.getName(), newUser.getEmail(), newUser.getType()));
     }
 
     @PostMapping("/signin")
